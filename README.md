@@ -18,13 +18,13 @@ Para executar o projeto, é necessário ter instalado:
 ## 1. Clonando o repositório
 
 ```bash
-git clone 
+git clone git@github.com:minhaisa/gs-fluir.git
 ```
 
 ## 2. Acessando o diretório do projeto
 
 ```bash
-cd ps-microservices
+cd gs-fluir
 ```
 
 ## 3. Inicializando o submódulo
