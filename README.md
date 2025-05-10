@@ -18,7 +18,7 @@ Para executar o projeto, é necessário ter instalado:
 ## 1. Clonando o repositório
 
 ```bash
-git clone git@ssh.dev.azure.com:v3/allcareti/Plataforma%20Solutions/ps-microservices
+git clone 
 ```
 
 ## 2. Acessando o diretório do projeto
