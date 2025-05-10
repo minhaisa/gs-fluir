@@ -1,0 +1,12 @@
+[submodule "backendPythonCompaing"]
+	path = backendPythonCompaing
+	url = https://github.com/minhaisa/api-compaing
+[submodule "backendPhp"]
+	path = backendPhp
+	url = https://github.com/minhaisa/backend-minhaIsa
+[submodule "backendPythonUpload"]
+	path = backendPythonUpload
+	url = https://github.com/minhaisa/Back-End-Python-Isa
+[submodule "FrontNext"]
+	path = FrontNext
+	url = https://github.com/minhaisa/front-minhaisa
