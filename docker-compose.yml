@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   backend-php:
@@ -10,6 +9,7 @@ services:
       - ./backendPhp:/var/www
     depends_on:
       - db
+      - mongo
     networks:
       - app-network
 
@@ -18,6 +18,8 @@ services:
     container_name: backend-python-compaing
     expose:
       - "8001:8000"
+    depends_on:
+      - mongo
     networks:
       - app-network
 
@@ -26,14 +28,18 @@ services:
     container_name: backend-python-upload
     expose:
       - "8002:8000"
+    depends_on:
+      - mongo
     networks:
       - app-network
 
-  front-next:
-    build: ./FrontNext
-    container_name: front-next
+  fluir:
+    build: ./FrontNext 
+    container_name: fluir
     expose:
       - "3000"
+    env_file:
+      - ./FrontNext/.env
     networks:
       - app-network
 
@@ -51,6 +57,21 @@ services:
     networks:
       - app-network
 
+  mongo:
+    image: mongo:latest
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: fluir
+    networks:
+      - app-network
+
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
@@ -62,12 +83,13 @@ services:
       - backend-php
       - backend-python-compaing
       - backend-python-upload
-      - front-next
+      - fluir
     networks:
       - app-network
 
 volumes:
   db-data:
+  mongo-data:
 
 networks:
   app-network:
