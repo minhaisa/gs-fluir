@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   backend-php:
@@ -9,7 +10,7 @@ services:
       - ./backendPhp:/var/www
     depends_on:
       - db
-      - mongo
+      - kafka
     networks:
       - app-network
 
@@ -17,7 +18,7 @@ services:
     build: ./backendPythonCompaing
     container_name: backend-python-compaing
     expose:
-      - "8001:8000"
+      - "8001"
     depends_on:
       - mongo
     networks:
@@ -27,7 +28,7 @@ services:
     build: ./backendPythonUpload
     container_name: backend-python-upload
     expose:
-      - "8002:8000"
+      - "8002"
     depends_on:
       - mongo
     networks:
@@ -87,10 +88,55 @@ services:
     networks:
       - app-network
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    networks:
+      - app-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    networks:
+      - app-network
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: kafdrop
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+    ports:
+      - "19000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+
 volumes:
   db-data:
   mongo-data:
 
 networks:
   app-network:
+    name: app-network
     driver: bridge
