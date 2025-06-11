@@ -5,6 +5,8 @@ services:
       context: ./backendPhp
       dockerfile: ./docker/php/Dockerfile
     container_name: backend-php
+    ports:
+      - "8008:8000"
     volumes:
       - ./backendPhp:/var/www
     depends_on:
@@ -16,8 +18,8 @@ services:
   backend-python-compaing:
     build: ./backendPythonCompaing
     container_name: backend-python-compaing
-    expose:
-      - "8001:8000"
+    ports:
+      - "8001:8001"
     depends_on:
       - mongo
     networks:
@@ -26,7 +28,7 @@ services:
   backend-python-upload:
     build: ./backendPythonUpload
     container_name: backend-python-upload
-    expose:
+    ports:
       - "8002:8000"
     depends_on:
       - mongo
@@ -36,12 +38,14 @@ services:
   fluir:
     build: ./FrontNext 
     container_name: fluir
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     env_file:
       - ./FrontNext/.env
     networks:
       - app-network
+    expose:
+      - "3000"
 
   db:
     image: mysql:8.0
@@ -81,8 +85,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - backend-php
-      - backend-python-compaing
-      - backend-python-upload
+      # - backend-python-compaing
+      # - backend-python-upload
       - fluir
     networks:
       - app-network
